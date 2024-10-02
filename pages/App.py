@@ -15,7 +15,7 @@ def logout():
 if 'redirect_to_auth' in st.session_state and st.session_state['redirect_to_auth']:
     st.session_state.clear()  # Clear the session state
     st.session_state['redirect'] = True  # Set redirect flag
-    st.rerun()  # Redirect to authenticatio
+    st.rerun()  # Redirect to authentication
 
 # Check if user is logged in
 if 'user' not in st.session_state:
@@ -23,7 +23,7 @@ if 'user' not in st.session_state:
     st.stop()  # Stop execution if not logged in
 
 # Set page configs
-st.set_page_config(page_title="PixelMix - Style Transfer", page_icon="./assets/favicon.png", layout="centered")
+st.set_page_config(page_title="Style-Genix", page_icon="./assets/favicon.png", layout="centered")
 
 # Header Section
 title = '<p style="text-align: center;font-size: 50px;font-weight: 350;font-family:Cursive "> StyleGenix </p>'
