@@ -2,7 +2,23 @@ import streamlit as st
 from PIL import Image
 import numpy as np
 from io import BytesIO
+from twilio.rest import Client  # Import Twilio client
 from API import transfer_style
+
+# Twilio credentials
+TWILIO_SID = 'ACe9c719bbea6c05333515b931ca9b53b8'
+TWILIO_AUTH_TOKEN = '64a46f06a2c1dfa9aa28871b346721b4'
+TWILIO_PHONE_NUMBER = '+12096460609'
+
+# Initialize Twilio client
+client = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
+
+def send_sms(to, message):
+    client.messages.create(
+        body=message,
+        from_=TWILIO_PHONE_NUMBER,
+        to=to
+    )
 
 # Function to handle logout
 def logout():
@@ -31,7 +47,7 @@ st.markdown(title, unsafe_allow_html=True)
 
 # Introduction Text
 st.markdown(
-    "<b> <i> Create Digital Art using Machine Learning ! </i> </b>  &nbsp; We takes 2 images — Content Image & Style Image — and blends "
+    "<b> <i> Create Digital Art using Machine Learning ! </i> </b>  &nbsp; We take 2 images — Content Image & Style Image — and blend "
     "them together so that the resulting output image retains the core elements of the content image, but appears to "
     "be “painted” in the style of the style reference image.", unsafe_allow_html=True
 )
@@ -84,12 +100,24 @@ content_image = None
 style_image = None
 with col1:
     content_image = st.file_uploader("Upload Content Image (PNG & JPG images only)", type=['png', 'jpg'])
+    if content_image is not None:
+        # Display the uploaded content image
+        content_img = Image.open(content_image)
+        st.image(content_img, caption="Uploaded Content Image", use_column_width=True)
+  
 with col2:
     style_image = st.file_uploader("Upload Style Image (PNG & JPG images only)", type=['png', 'jpg'])
+    if style_image is not None:
+        # Display the uploaded style image
+        style_img = Image.open(style_image)
+        st.image(style_img, caption="Uploaded Style Image", use_column_width=True)
 
 st.markdown("</br>", unsafe_allow_html=True)
 st.warning('NOTE: You need at least Intel i3 with 8GB memory for proper functioning of this application. ' +
    'Images greater than (2000x2000) are resized to (1000x1000).')
+
+# Add a phone number input for SMS notification
+user_phone_number = st.text_input("Enter your phone number for SMS notification:", placeholder="+1234567890")
 
 if content_image is not None and style_image is not None:
     with st.spinner("Styling Images...will take about 20-30 secs"):
@@ -126,3 +154,7 @@ if content_image is not None and style_image is not None:
                 file_name="output.png",
                 mime="image/png"
             )
+
+            # Send SMS notification if a phone number is provided
+            if user_phone_number:
+                send_sms(user_phone_number, "Your styled image is ready for download!")
