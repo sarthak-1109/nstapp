@@ -1,9 +1,10 @@
 import streamlit as st
 import pyrebase
-# from App import app 
+import json
+
 # Firebase configuration
 firebase_config = {
-    "apiKey": "AIzaSyDJiQuv0cZ-AiObYbtQHhtTABhLm-Smxrg",
+      "apiKey": "AIzaSyDJiQuv0cZ-AiObYbtQHhtTABhLm-Smxrg",
     "authDomain": "stylegenix-b8eed.firebaseapp.com",
     "projectId": "stylegenix-b8eed",
     "storageBucket": "stylegenix-b8eed.appspot.com",
@@ -94,7 +95,7 @@ st.title("Authentication System")
 st.header("Welcome to StyleGenix")
 
 # Navigation options
-option = st.selectbox("Select an option:", ["Sign In", "Register", "Forgot Password"])
+option = st.radio("Select an option:", ["Sign In", "Register", "Forgot Password"])
 
 if 'user' not in st.session_state:
     with st.form(key='auth_form'):
@@ -106,7 +107,7 @@ if 'user' not in st.session_state:
             if submit_button:
                 if sign_in(email_signin, password_signin):
                     st.session_state['redirect'] = True
-                    st.rerun()  # Updated method
+                    st.rerun()
                 else:
                     st.error("Invalid email or password.")
 
